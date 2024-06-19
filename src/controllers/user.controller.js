@@ -130,24 +130,26 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const option = {
+    const options = {
         httpOnly: true,
-        security: true
+        secure: true
     }
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, option)
-        .cookie("refreshToken", refreshToken, option)
-        .json(200,
-            {
-                user: loggedInUser, accessToken, refreshToken,
-                // Here pass both tokens again because of that user 
-                // may store them in the localStorage or if you are building
-                // a mobile application where cookies are not available. 
-            },
-            "User logged In Successfully"
-
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser, accessToken, refreshToken,
+                    // Here pass both tokens again because of that user 
+                    // may store them in the localStorage or if you are building
+                    // a mobile application where cookies are not available. 
+                },
+                "User logged In Successfully"
+            )
         )
 })
 
@@ -168,16 +170,20 @@ const logoutUser = asyncHandler(async (req, res) => {
         }
     )
 
-    const option = {
+    const options = {
         httpOnly: true,
         secure: true
     }
 
     return res
         .status(200)
-        .clearCookie("accessToken", option)
-        .clearCookie("refreshToken", option)
-        .json(200, {}, "User logged Out")
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(
+            new ApiResponse(
+                200, {}, "User logged Out"
+            )
+        )
 })
 
 export { registerUser, loginUser, logoutUser }
