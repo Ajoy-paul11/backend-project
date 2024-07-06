@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
+import { unLinkFile } from "../utils/deleteFiles.js";
 
 
 const generateAccessAndFreshToken = async (userId) => {
@@ -48,8 +49,9 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     // console.log(existedUser); --> It returns the user object that match
-
     if (existedUser) {
+        await unLinkFile(req.files?.avatar[0]?.path)
+        await unLinkFile(req.files?.coverImage[0]?.path)
         throw new ApiError(409, "User with email or username already exists")
     }
 
