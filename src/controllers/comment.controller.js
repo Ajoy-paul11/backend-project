@@ -96,7 +96,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
         return res
             .status(200)
             .json(
-                new ApiResponse(200, comments, "Comments fetched successfully")
+                new ApiResponse(200, comments.docs, "Comments fetched successfully")
             )
 
     } catch (error) {
